@@ -2,7 +2,7 @@
 
 ## Project Description
 
-Student Management System is a mini project developed using C language to manage student records digitally. The project helps in storing, searching, updating, displaying, and deleting student information efficiently using file handling.
+Student Management System is a mini project developed using C language to manage student records efficiently. The system helps users add, display, search, update, and delete student details using file handling.
 
 ---
 
@@ -11,10 +11,10 @@ Student Management System is a mini project developed using C language to manage
 * Add Student Record
 * Display Student Records
 * Search Student by Roll Number
-* Update Student Details
+* Update Student Information
 * Delete Student Record
 * Automatic Grade Calculation
-* File Handling for Permanent Storage
+* Permanent Data Storage using File Handling
 
 ---
 
@@ -27,9 +27,18 @@ Student Management System is a mini project developed using C language to manage
 
 ---
 
+## Team Members
+
+* Kadir Sagari
+* Rehan Mulani
+* Prathmesh Navgire
+* Nikhil Kurle
+
+---
+
 ## Grade Logic
 
-| Marks        | Grade |
+| Marks Range  | Grade |
 | ------------ | ----- |
 | 90 and Above | A     |
 | 75 - 89      | B     |
@@ -40,11 +49,11 @@ Student Management System is a mini project developed using C language to manage
 
 ## Objective of Project
 
-* To manage student records efficiently
+* To manage student records digitally
 * To reduce manual paperwork
 * To learn file handling in C
-* To understand structures and functions
-* To practice GitHub collaboration
+* To implement CRUD operations
+* To improve programming and collaboration skills
 
 ---
 
@@ -52,9 +61,9 @@ Student Management System is a mini project developed using C language to manage
 
 1. Start Program
 2. Display Menu
-3. Select Operation
-4. Perform Student Record Operation
-5. Save/Update Data
+3. User Selects Option
+4. Perform Required Operation
+5. Store/Update Records
 6. Display Result
 7. Exit Program
 
@@ -65,14 +74,15 @@ Student Management System is a mini project developed using C language to manage
 * Easy to use
 * Saves time
 * Permanent data storage
-* Easy searching and updating
+* Organized student records
 * Reduces manual work
+* Easy searching and updating
 
 ---
 
 ## Limitations of Project
 
 * Console-based interface only
-* No database connectivity
 * No login/security system
-* Limited graphical features
+* No database connectivity
+* Basic user interface
