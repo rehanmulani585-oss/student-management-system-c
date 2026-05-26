@@ -84,5 +84,4 @@ Student Management System is a mini project developed using C language to manage
 
 * Console-based interface only
 * No login/security system
-* No database connectivity
 * Basic user interface
