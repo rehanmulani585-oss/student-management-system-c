@@ -10,68 +10,18 @@ struct Student
     char grade;
 };
 
+struct Student s;
+
+/* Function Declarations */
+char calculateGrade(float marks);
 void addStudent();
+void saveStudent();
 void displayStudents();
 void searchStudent();
 void updateStudent();
 void deleteStudent();
-char calculateGrade(float marks);
 
-int main()
-{
-    int choice = 0;
-
-    while (choice != 6)
-    {
-        printf("\n=====================================");
-        printf("\n   STUDENT MANAGEMENT SYSTEM");
-        printf("\n=====================================");
-
-        printf("\n1. Add Student");
-        printf("\n2. Display Students");
-        printf("\n3. Search Student");
-        printf("\n4. Update Student");
-        printf("\n5. Delete Student");
-        printf("\n6. Exit");
-
-        printf("\n\nEnter Your Choice : ");
-        scanf("%d", &choice);
-
-        switch (choice)
-        {
-        case 1:
-            addStudent();
-            break;
-
-        case 2:
-            displayStudents();
-            break;
-
-        case 3:
-            searchStudent();
-            break;
-
-        case 4:
-            updateStudent();
-            break;
-
-        case 5:
-            deleteStudent();
-            break;
-
-        case 6:
-            printf("\nProgram Closed Successfully.\n");
-            break;
-
-        default:
-            printf("\nInvalid Choice!\n");
-        }
-    }
-
-    return 0;
-}
-
-/* Grade Logic */
+/* Grade Calculation */
 char calculateGrade(float marks)
 {
     if (marks >= 90)
@@ -87,20 +37,6 @@ char calculateGrade(float marks)
 /* Add Student */
 void addStudent()
 {
-    FILE *fp;
-    struct Student s;
-
-    /* Open/Create students.dat file */
-    fp = fopen("students.dat", "ab");
-
-    if (fp == NULL)
-    {
-        printf("\nFile Error!\n");
-        return;
-    }
-
-    printf("\n========== ADD STUDENT ==========");
-
     printf("\nEnter Roll Number : ");
     scanf("%d", &s.roll);
 
@@ -110,25 +46,43 @@ void addStudent()
     printf("Enter Student Marks : ");
     scanf("%f", &s.marks);
 
-    /* Calculate Grade */
     s.grade = calculateGrade(s.marks);
 
-    /* Save Record in students.dat */
-    fwrite(&s, sizeof(struct Student), 1, fp);
+    printf("\nStudent Added In Memory!");
+    printf("\nNow Select SAVE DATA Option.\n");
+}
+
+/* Save Student Data */
+void saveStudent()
+{
+    FILE *fp;
+
+    fp = fopen("students.csv", "a");
+
+    if (fp == NULL)
+    {
+        printf("\nFile Error!\n");
+        return;
+    }
+
+    fprintf(fp, "%d,%s,%.2f,%c\n",
+            s.roll,
+            s.name,
+            s.marks,
+            s.grade);
 
     fclose(fp);
 
-    printf("\nStudent Added Successfully!\n");
+    printf("\nData Saved Successfully!\n");
 }
 
 /* Display Students */
 void displayStudents()
 {
     FILE *fp;
-    struct Student s;
+    char line[200];
 
-    /* Read students.dat */
-    fp = fopen("students.dat", "rb");
+    fp = fopen("students.csv", "r");
 
     if (fp == NULL)
     {
@@ -136,17 +90,11 @@ void displayStudents()
         return;
     }
 
-    printf("\n=====================================");
-    printf("\n        STUDENT RECORDS");
-    printf("\n=====================================");
+    printf("\n========== STUDENT RECORDS ==========\n");
 
-    while (fread(&s, sizeof(struct Student), 1, fp))
+    while (fgets(line, sizeof(line), fp))
     {
-        printf("\nRoll Number : %d", s.roll);
-        printf("\nName        : %s", s.name);
-        printf("\nMarks       : %.2f", s.marks);
-        printf("\nGrade       : %c", s.grade);
-        printf("\n-------------------------------------");
+        printf("%s", line);
     }
 
     fclose(fp);
@@ -156,10 +104,11 @@ void displayStudents()
 void searchStudent()
 {
     FILE *fp;
-    struct Student s;
-    int roll, found = 0;
+    char line[200];
+    int roll;
+    int found = 0;
 
-    fp = fopen("students.dat", "rb");
+    fp = fopen("students.csv", "r");
 
     if (fp == NULL)
     {
@@ -170,19 +119,18 @@ void searchStudent()
     printf("\nEnter Roll Number to Search : ");
     scanf("%d", &roll);
 
-    while (fread(&s, sizeof(struct Student), 1, fp))
+    while (fgets(line, sizeof(line), fp))
     {
-        if (s.roll == roll)
-        {
-            printf("\n===== STUDENT FOUND =====");
+        int fileRoll;
 
-            printf("\nRoll Number : %d", s.roll);
-            printf("\nName        : %s", s.name);
-            printf("\nMarks       : %.2f", s.marks);
-            printf("\nGrade       : %c\n", s.grade);
+        sscanf(line, "%d,", &fileRoll);
+
+        if (fileRoll == roll)
+        {
+            printf("\nStudent Found:\n");
+            printf("%s", line);
 
             found = 1;
-            break;
         }
     }
 
@@ -198,11 +146,12 @@ void searchStudent()
 void updateStudent()
 {
     FILE *fp, *temp;
-    struct Student s;
-    int roll, found = 0;
+    char line[200];
+    int roll;
+    int found = 0;
 
-    fp = fopen("students.dat", "rb");
-    temp = fopen("temp.dat", "wb");
+    fp = fopen("students.csv", "r");
+    temp = fopen("temp.csv", "w");
 
     if (fp == NULL)
     {
@@ -213,31 +162,48 @@ void updateStudent()
     printf("\nEnter Roll Number to Update : ");
     scanf("%d", &roll);
 
-    while (fread(&s, sizeof(struct Student), 1, fp))
+    while (fgets(line, sizeof(line), fp))
     {
-        if (s.roll == roll)
-        {
-            printf("\n===== UPDATE STUDENT =====");
+        int fileRoll;
+        char name[50];
+        float marks;
+        char grade;
 
+        sscanf(line, "%d,%[^,],%f,%c",
+               &fileRoll,
+               name,
+               &marks,
+               &grade);
+
+        if (fileRoll == roll)
+        {
             printf("\nEnter New Name : ");
-            scanf(" %[^\n]", s.name);
+            scanf(" %[^\n]", name);
 
             printf("Enter New Marks : ");
-            scanf("%f", &s.marks);
+            scanf("%f", &marks);
 
-            s.grade = calculateGrade(s.marks);
+            grade = calculateGrade(marks);
+
+            fprintf(temp, "%d,%s,%.2f,%c\n",
+                    fileRoll,
+                    name,
+                    marks,
+                    grade);
 
             found = 1;
         }
-
-        fwrite(&s, sizeof(struct Student), 1, temp);
+        else
+        {
+            fputs(line, temp);
+        }
     }
 
     fclose(fp);
     fclose(temp);
 
-    remove("students.dat");
-    rename("temp.dat", "students.dat");
+    remove("students.csv");
+    rename("temp.csv", "students.csv");
 
     if (found)
         printf("\nRecord Updated Successfully!\n");
@@ -249,11 +215,12 @@ void updateStudent()
 void deleteStudent()
 {
     FILE *fp, *temp;
-    struct Student s;
-    int roll, found = 0;
+    char line[200];
+    int roll;
+    int found = 0;
 
-    fp = fopen("students.dat", "rb");
-    temp = fopen("temp.dat", "wb");
+    fp = fopen("students.csv", "r");
+    temp = fopen("temp.csv", "w");
 
     if (fp == NULL)
     {
@@ -264,11 +231,15 @@ void deleteStudent()
     printf("\nEnter Roll Number to Delete : ");
     scanf("%d", &roll);
 
-    while (fread(&s, sizeof(struct Student), 1, fp))
+    while (fgets(line, sizeof(line), fp))
     {
-        if (s.roll != roll)
+        int fileRoll;
+
+        sscanf(line, "%d,", &fileRoll);
+
+        if (fileRoll != roll)
         {
-            fwrite(&s, sizeof(struct Student), 1, temp);
+            fputs(line, temp);
         }
         else
         {
@@ -279,11 +250,71 @@ void deleteStudent()
     fclose(fp);
     fclose(temp);
 
-    remove("students.dat");
-    rename("temp.dat", "students.dat");
+    remove("students.csv");
+    rename("temp.csv", "students.csv");
 
     if (found)
         printf("\nRecord Deleted Successfully!\n");
     else
         printf("\nStudent Not Found!\n");
+}
+
+/* Main Function */
+int main()
+{
+    int choice;
+
+    while (1)
+    {
+        printf("\n=====================================");
+        printf("\n   STUDENT MANAGEMENT SYSTEM");
+        printf("\n=====================================");
+
+        printf("\n1. Add Student");
+        printf("\n2. Save Data");
+        printf("\n3. Display Students");
+        printf("\n4. Search Student");
+        printf("\n5. Update Student");
+        printf("\n6. Delete Student");
+        printf("\n7. Exit");
+
+        printf("\n\nEnter Your Choice : ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            addStudent();
+            break;
+
+        case 2:
+            saveStudent();
+            break;
+
+        case 3:
+            displayStudents();
+            break;
+
+        case 4:
+            searchStudent();
+            break;
+
+        case 5:
+            updateStudent();
+            break;
+
+        case 6:
+            deleteStudent();
+            break;
+
+        case 7:
+            printf("\nProgram Closed Successfully.\n");
+            exit(0);
+
+        default:
+            printf("\nInvalid Choice!\n");
+        }
+    }
+
+    return 0;
 }
