@@ -71,6 +71,7 @@ int main()
     return 0;
 }
 
+/* Grade Logic */
 char calculateGrade(float marks)
 {
     if (marks >= 90)
@@ -83,11 +84,13 @@ char calculateGrade(float marks)
         return 'F';
 }
 
+/* Add Student */
 void addStudent()
 {
     FILE *fp;
     struct Student s;
 
+    /* Open/Create students.dat file */
     fp = fopen("students.dat", "ab");
 
     if (fp == NULL)
@@ -95,6 +98,8 @@ void addStudent()
         printf("\nFile Error!\n");
         return;
     }
+
+    printf("\n========== ADD STUDENT ==========");
 
     printf("\nEnter Roll Number : ");
     scanf("%d", &s.roll);
@@ -105,8 +110,10 @@ void addStudent()
     printf("Enter Student Marks : ");
     scanf("%f", &s.marks);
 
+    /* Calculate Grade */
     s.grade = calculateGrade(s.marks);
 
+    /* Save Record in students.dat */
     fwrite(&s, sizeof(struct Student), 1, fp);
 
     fclose(fp);
@@ -114,11 +121,13 @@ void addStudent()
     printf("\nStudent Added Successfully!\n");
 }
 
+/* Display Students */
 void displayStudents()
 {
     FILE *fp;
     struct Student s;
 
+    /* Read students.dat */
     fp = fopen("students.dat", "rb");
 
     if (fp == NULL)
@@ -143,6 +152,7 @@ void displayStudents()
     fclose(fp);
 }
 
+/* Search Student */
 void searchStudent()
 {
     FILE *fp;
@@ -164,12 +174,12 @@ void searchStudent()
     {
         if (s.roll == roll)
         {
-            printf("\nStudent Found!\n");
+            printf("\n===== STUDENT FOUND =====");
 
-            printf("Roll Number : %d\n", s.roll);
-            printf("Name        : %s\n", s.name);
-            printf("Marks       : %.2f\n", s.marks);
-            printf("Grade       : %c\n", s.grade);
+            printf("\nRoll Number : %d", s.roll);
+            printf("\nName        : %s", s.name);
+            printf("\nMarks       : %.2f", s.marks);
+            printf("\nGrade       : %c\n", s.grade);
 
             found = 1;
             break;
@@ -184,6 +194,7 @@ void searchStudent()
     fclose(fp);
 }
 
+/* Update Student */
 void updateStudent()
 {
     FILE *fp, *temp;
@@ -206,6 +217,8 @@ void updateStudent()
     {
         if (s.roll == roll)
         {
+            printf("\n===== UPDATE STUDENT =====");
+
             printf("\nEnter New Name : ");
             scanf(" %[^\n]", s.name);
 
@@ -232,6 +245,7 @@ void updateStudent()
         printf("\nStudent Not Found!\n");
 }
 
+/* Delete Student */
 void deleteStudent()
 {
     FILE *fp, *temp;
