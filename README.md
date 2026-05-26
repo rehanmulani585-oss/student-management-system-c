@@ -8,13 +8,13 @@ Student Management System is a mini project developed using C language to manage
 
 ## Features
 
-* Add Student Record
-* Display Student Records
-* Search Student by Roll Number
-* Update Student Information
-* Delete Student Record
-* Automatic Grade Calculation
-* Permanent Data Storage using File Handling
+1. Add Student
+2. Save Data
+3. Display Students
+4. Search Student
+5. Update Student
+6. Delete Student
+7. Exit
 
 ---
 
